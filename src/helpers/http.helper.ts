@@ -10,4 +10,11 @@ export class HttpHelper {
 
         })
     }
+
+    static handleUserError(err: any, message: string, res: Response){
+        res.status(HttpStatusCode.BadRequest).json({
+            message,
+            err
+        })
+    }
 }
