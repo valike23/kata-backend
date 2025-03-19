@@ -14,4 +14,8 @@ export class CompetitionCtrl {
         const resp = await Competition.create(competition);
         HttpHelper.handleResponse(resp, res);
     }
+
+    static async activateCompetitionCtrl(){
+         
+    }
 }
