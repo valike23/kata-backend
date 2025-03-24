@@ -1,5 +1,6 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "..";
+import { Category } from "./category.model";
 
 export interface Icompetition{
     id?: number;
@@ -42,6 +43,6 @@ Competition.init({
 },{sequelize, modelName: 'competition'});
 
 
-//Competition.hasMany(Category);
+Competition.hasMany(Category);
 //Competition.hasMany(Entry);
 Competition.sync();
