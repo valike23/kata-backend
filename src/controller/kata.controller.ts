@@ -13,4 +13,10 @@ export class KataController {
         const resp = await Kata.create(kata);
         HttpHelper.handleResponse(resp, res);
     }
+
+    static async deleteKataCtrl(req: Request, res: Response) {
+            const {id} = req.query;
+            const resp = await Kata.destroy({where: {id}});
+            HttpHelper.handleResponse(resp, res);
+        }
 }

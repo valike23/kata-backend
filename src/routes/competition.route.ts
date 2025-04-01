@@ -11,12 +11,14 @@ competitionRoute.get('/', CompetitionCtrl.getCompetitionCtrl)
 competitionRoute.post('/', CompetitionCtrl.createCompetitionCtrl)
 competitionRoute.post('/category', CategoryCtrl.createCategoryCtrl)
 competitionRoute.get('/category', CategoryCtrl.getCategoryCtrl)
+competitionRoute.delete('/category', CategoryCtrl.deleteCategoryCtrl)
 competitionRoute.get('/clubs', ClubCtroller.getClubCtrl)
 competitionRoute.post('/clubs', ClubCtroller.createClubCtrl)
+competitionRoute.delete('/clubs', ClubCtroller.deleteClubCtrl)
 competitionRoute.post('/entry/single', EntryController.createEntryCtrl)
 competitionRoute.get('/entry', EntryController.getEntryCtrl)
 competitionRoute.get('/kata', KataController.getKataCtrl)
 competitionRoute.post('/kata/single', KataController.createKataCtrl)
-
+competitionRoute.delete('/kata', KataController.deleteKataCtrl)
 
 export default competitionRoute;

@@ -18,4 +18,8 @@ export class CompetitionCtrl {
     static async activateCompetitionCtrl(){
          
     }
+
+    static async deleteCompetition(){
+        
+    }
 }

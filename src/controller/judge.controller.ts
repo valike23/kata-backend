@@ -27,4 +27,9 @@ export class JudgeController {
         const resp = await Judge.create(judge);
         HttpHelper.handleResponse(resp, res);
     }
+    static async deleteJudgeCtrl(req: Request, res: Response) {
+            const {id} = req.query;
+            const resp = await Judge.destroy({where: {id}});
+            HttpHelper.handleResponse(resp, res);
+        }
 }

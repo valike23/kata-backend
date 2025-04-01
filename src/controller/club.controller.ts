@@ -14,5 +14,11 @@ export class ClubCtroller {
         HttpHelper.handleResponse(resp, res);
     }
 
+
+    static async deleteClubCtrl(req: Request, res: Response) {
+            const {id} = req.query;
+            const resp = await Club.destroy({where: {id}});
+            HttpHelper.handleResponse(resp, res);
+        }
    
 }

@@ -16,5 +16,12 @@ export class CategoryCtrl {
                 HttpHelper.handleResponse(resp, res);
     }
 
+
+    static async deleteCategoryCtrl(req: Request, res: Response) {
+        const {id} = req.query;
+        const resp = await Category.destroy({where: {id}});
+        HttpHelper.handleResponse(resp, res);
+    }
+
     
 }
