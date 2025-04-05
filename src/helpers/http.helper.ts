@@ -17,4 +17,17 @@ export class HttpHelper {
             err
         })
     }
+
+    static handleServerError(err: any, res: Response){
+        res.status(HttpStatusCode.InternalServerError).json({
+            message: 'Internal Server Error',
+            err
+        })
+    }
+    static handleNotFound(message: string, res: Response){
+        res.status(HttpStatusCode.NotFound).json({
+            message,
+        })
+    }
+
 }

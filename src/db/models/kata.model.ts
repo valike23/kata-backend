@@ -1,9 +1,13 @@
 import { DataTypes, Model } from "sequelize";
 import sequelize from "..";
 
+export interface IKata {
+    id?: number; 
+    name: string;
+}
   
 export class Kata extends Model {
-    declare id: number;
+    declare id?: number;
     declare name: string;
 
 }
