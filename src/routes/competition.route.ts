@@ -9,6 +9,7 @@ const competitionRoute = Router();
 
 competitionRoute.get('/', CompetitionCtrl.getCompetitionCtrl)
 competitionRoute.post('/', CompetitionCtrl.createCompetitionCtrl)
+competitionRoute.delete('/', CompetitionCtrl.deleteCompetitionCtrl)
 competitionRoute.post('/category', CategoryCtrl.createCategoryCtrl)
 competitionRoute.get('/category', CategoryCtrl.getCategoryCtrl)
 competitionRoute.delete('/category', CategoryCtrl.deleteCategoryCtrl)

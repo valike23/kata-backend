@@ -19,7 +19,10 @@ export class CompetitionCtrl {
          
     }
 
-    static async deleteCompetition(){
+    static async deleteCompetitionCtrl(req: Request, res: Response){
+        const id = req.body.id;
+        const resp = await Competition.destroy({where: {id}});
+        HttpHelper.handleResponse(resp, res);
         
     }
 }
