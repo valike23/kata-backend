@@ -41,7 +41,7 @@ export class EntryController {
     static async deleteEntryCtrl(req: Request, res: Response) {
         const resp = await Entry.destroy({
             where: {
-                id: req.params.id
+                id: req.query.id
             }
         });
         HttpHelper.handleResponse(resp, res);
