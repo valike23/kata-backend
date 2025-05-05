@@ -6,3 +6,10 @@ export class KataDto {
 
 
 }
+
+export class EntryDto {
+    @IsString()
+    name!: string;
+    @IsString()
+    club!: string;
+}

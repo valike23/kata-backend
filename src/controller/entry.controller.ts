@@ -19,6 +19,11 @@ export class EntryController {
 
     static async createEntryCtrl(req: Request, res: Response) {
         const entry: any = req.body;
+        const activeCompetition = await Competition.findOne({where:{active: 1}});
+        if (!activeCompetition) {
+            return HttpHelper.handleNotFound("No active competition found", res);
+        }
+        entry.competitionId = activeCompetition.id;
         const resp = await Entry.create(entry);
         HttpHelper.handleResponse(resp, res);
     }
