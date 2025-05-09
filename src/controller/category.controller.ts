@@ -7,51 +7,51 @@ import { Bout } from "../db/models/bout.model";
 
 
 export class CategoryCtrl {
-    static async getCategoryCtrl(req: Request, res: Response){
+    static async getCategoryCtrl(req: Request, res: Response) {
         const resp = await Category.findAll();
         HttpHelper.handleResponse(resp, res);
-        
+
     }
 
-    static async createCategoryCtrl(req: Request, res: Response){
+    static async createCategoryCtrl(req: Request, res: Response) {
         const competition: any = req.body;
-        const activeCompetition = await Competition.findOne({where:{active: 1}});
+        const activeCompetition = await Competition.findOne({ where: { active: 1 } });
         if (!activeCompetition) {
-            return HttpHelper.handleNotFound("No active competition found", res);   
+            return HttpHelper.handleNotFound("No active competition found", res);
         }
         competition.competitionId = activeCompetition.id;
-                const resp = await Category.create(competition);
-                HttpHelper.handleResponse(resp, res);
+        const resp = await Category.create(competition);
+        HttpHelper.handleResponse(resp, res);
     }
 
 
     static async deleteCategoryCtrl(req: Request, res: Response) {
-        const {id} = req.query;
-        const resp = await Category.destroy({where: {id}});
+        const { id } = req.query;
+        const resp = await Category.destroy({ where: { id } });
         HttpHelper.handleResponse(resp, res);
     }
 
-    static async draftCategoryCtrl(req: Request, res: Response){
-
-
-        const activeCompetition = await Competition.findOne({where: {id: req.query.competitionId}})
-        if(!activeCompetition) return HttpHelper.handleNotFound('the competition is not active', res);
-        const category = await Category.findOne();
-        if(!category) return HttpHelper.handleNotFound('this category does not exist', res);
-        if(category.isDrafted) return HttpHelper.handleNotFound('category has already been drafted', res);
+    static async draftCategoryCtrl(req: Request, res: Response) {
+        const myCategory = req.body;
+        console.log("the category is working");
+        const activeCompetition = await Competition.findOne({ where: { id: myCategory.competitionId } })
+        if (!activeCompetition) return HttpHelper.handleNotFound('the competition is not active', res);
+        const category = await Category.findOne({ where: { id: myCategory.id } });
+        if (!category) return HttpHelper.handleNotFound('this category does not exist', res);
+        if (category.isDrafted) return HttpHelper.handleNotFound('category has already been drafted', res);
         const entries = await Entry.findAll({
             where: { categoryId: category.id }
         });
-        
-        
+
+
         if (entries.length < 2) {
             return HttpHelper.handleNotFound("Not enough entries to draft", res);
         }
-        
+
         // Shuffle entries for random pairing
         const shuffled = [...entries].sort(() => 0.5 - Math.random());
         const bouts: Bout[] = [];
-        
+
         // Create bouts for pairs
         for (let i = 0; i < shuffled.length; i += 2) {
             if (i + 1 >= shuffled.length) {
@@ -77,13 +77,13 @@ export class CategoryCtrl {
                 bouts.push(bout);
             }
         }
-        
+
         category.isDrafted = true;
         await category.save();
-        
+
         return HttpHelper.handleResponse(bouts, res);
 
     }
 
-    
+
 }
