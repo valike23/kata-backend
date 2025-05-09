@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Category } from "../db/models/category.model";
+import { Category, Icategory } from "../db/models/category.model";
 import { HttpHelper } from "../helpers/http.helper";
 import { Competition } from "../db/models/competition.model";
 import { Entry } from "../db/models/entry.model";
@@ -32,7 +32,7 @@ export class CategoryCtrl {
     }
 
     static async draftCategoryCtrl(req: Request, res: Response) {
-        const myCategory = req.body;
+        const myCategory: Icategory = req.body;
         console.log("the category is working");
         const activeCompetition = await Competition.findOne({ where: { id: myCategory.competitionId } })
         if (!activeCompetition) return HttpHelper.handleNotFound('the competition is not active', res);
@@ -60,9 +60,9 @@ export class CategoryCtrl {
                     entry1Id: shuffled[i].id,
                     entry2Id: shuffled[i].id, // Same entry indicates a bye
                     winnerId: shuffled[i].id,
-                    categoryId: req.query.categoryId,
+                    categoryId: myCategory.id,
                     round: 1,
-                    competitionId: req.query.competitionId
+                    competitionId: myCategory.competitionId
                 });
                 bouts.push(byeBout);
             } else {
@@ -70,9 +70,9 @@ export class CategoryCtrl {
                     entry1Id: shuffled[i].id,
                     entry2Id: shuffled[i + 1].id,
                     winnerId: null, // No winner yet
-                    categoryId: req.query.categoryId,
+                    categoryId: myCategory.id,
                     round: 1,
-                    competitionId: req.query.competitionId,
+                    competitionId: myCategory.competitionId,
                 });
                 bouts.push(bout);
             }
