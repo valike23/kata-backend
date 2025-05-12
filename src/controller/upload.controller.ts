@@ -5,7 +5,7 @@ import { IKata, Kata } from "../db/models/kata.model";
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { EntryDto, KataDto } from "../db/dtos/kata.dto";
-import { Entry, Ientry } from "../db/models/entry.model";
+import { Ientry } from "../db/models/entry.model";
 
 
 export class UploadController {
@@ -105,7 +105,8 @@ export class UploadController {
     
             validated.push(instance);
           }
-         const resp = await Entry.bulkCreate(validated.map(instance => ({ ...instance })))
+          
+         const resp = validated.map(instance => ({ ...instance }));
           return HttpHelper.handleResponse( resp , res);
       } catch (error) {
         return HttpHelper.handleServerError(error, res);

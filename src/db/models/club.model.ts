@@ -32,8 +32,6 @@ Club.init({
     flag:{
         type: DataTypes.STRING,
         allowNull: false,
-        
-
     }
 
    

@@ -1,6 +1,7 @@
 import { Club } from "../db/models/club.model";
 import { Request, Response } from "express";
 import { HttpHelper } from "../helpers/http.helper";
+import { Competition } from "../db/models/competition.model";
 
 export class ClubCtroller {
     static async getClubCtrl(req: Request, res: Response) {
