@@ -13,6 +13,11 @@ export class CategoryCtrl {
 
     }
 
+    static async getSingleCategoryCtrl(req: Request, res: Response){
+        const resp = await Category.findOne({where:{id: req.params.id}})
+        HttpHelper.handleResponse(resp, res);
+    }
+
     static async createCategoryCtrl(req: Request, res: Response) {
         const competition: any = req.body;
         const activeCompetition = await Competition.findOne({ where: { active: 1 } });

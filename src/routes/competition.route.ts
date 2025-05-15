@@ -4,6 +4,7 @@ import { CategoryCtrl } from "../controller/category.controller";
 import { ClubCtroller } from "../controller/club.controller";
 import { EntryController } from "../controller/entry.controller";
 import { KataController } from "../controller/kata.controller";
+import { BoutController } from "../controller/bout.controller";
 
 const competitionRoute = Router();
 
@@ -13,8 +14,10 @@ competitionRoute.delete('/', CompetitionCtrl.deleteCompetitionCtrl)
 competitionRoute.put('/activate', CompetitionCtrl.activateCompetitionCtrl)
 competitionRoute.post('/category', CategoryCtrl.createCategoryCtrl)
 competitionRoute.get('/category', CategoryCtrl.getCategoryCtrl)
+competitionRoute.get('/category/:id', CategoryCtrl.getSingleCategoryCtrl)
 competitionRoute.post('/category/draft', CategoryCtrl.draftCategoryCtrl)
 competitionRoute.delete('/category', CategoryCtrl.deleteCategoryCtrl)
+competitionRoute.get('/bouts/:id',BoutController.getAllBouts)
 competitionRoute.get('/clubs', ClubCtroller.getClubCtrl)
 competitionRoute.post('/clubs', ClubCtroller.createClubCtrl)
 competitionRoute.delete('/clubs', ClubCtroller.deleteClubCtrl)

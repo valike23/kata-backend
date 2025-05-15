@@ -106,7 +106,8 @@ export class UploadController {
             validated.push(instance);
           }
           
-         const resp = validated.map(instance => ({ ...instance }));
+         let resp = validated.map(instance => ({ ...instance }));
+        
           return HttpHelper.handleResponse( resp , res);
       } catch (error) {
         return HttpHelper.handleServerError(error, res);
