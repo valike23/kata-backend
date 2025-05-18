@@ -13,6 +13,7 @@ export interface Ibout {
   categoryId?: number;
   round?: number;
   competitionId?: number;
+  nextBoutId?: number | null;     // ← new
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -25,16 +26,17 @@ export class Bout extends Model {
   declare categoryId: number;
   declare round: number;
   declare competitionId: number;
+  declare nextBoutId: number | null;  // ← new
 }
 
 Bout.init({
   id: {
-    type: DataTypes.INTEGER,      // ← must be INTEGER for SQLite autoincrement
+    type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true
   },
   entry1Id: {
-    type: DataTypes.INTEGER,      // ← allowNull so you can seed future rounds/byes
+    type: DataTypes.INTEGER,
     allowNull: true
   },
   entry2Id: {
@@ -56,6 +58,12 @@ Bout.init({
   competitionId: {
     type: DataTypes.INTEGER,
     allowNull: false
+  },
+  // NEW FIELD: which bout the winner should advance into
+  nextBoutId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    comment: "the ID of the Bout in the next round that this match's winner will enter"
   }
 }, {
   sequelize,
@@ -63,15 +71,18 @@ Bout.init({
   timestamps: true
 });
 
+// existing associations
 Bout.belongsTo(Entry, { foreignKey: "entry1Id", as: "entry1" });
 Bout.belongsTo(Entry, { foreignKey: "entry2Id", as: "entry2" });
 Bout.belongsTo(Entry, { foreignKey: "winnerId", as: "winner" });
 Bout.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
 Bout.belongsTo(Competition, { foreignKey: "competitionId", as: "competition" });
 
-// If you’re in development you can force-recreate the table:
+// self-referential associations
+Bout.belongsTo(Bout, { foreignKey: "nextBoutId", as: "nextBout" });
+Bout.hasMany(Bout,  { foreignKey: "nextBoutId", as: "previousBouts" });
 
-
-(async ()=>{
-await Bout.sync({ force: true });
-})()
+// Sync (in development you can use alter rather than force)
+(async () => {
+  await sequelize.sync({ force: true });
+})();
