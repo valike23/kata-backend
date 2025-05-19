@@ -84,5 +84,5 @@ Bout.hasMany(Bout,  { foreignKey: "nextBoutId", as: "previousBouts" });
 
 // Sync (in development you can use alter rather than force)
 (async () => {
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ alter: true });
 })();

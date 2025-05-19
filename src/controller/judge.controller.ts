@@ -9,7 +9,8 @@ export class JudgeController {
         HttpHelper.handleResponse(resp, res);
     }
     static async loginSingleJudgeCtrl(req: Request, res: Response) {
-        const judge: {judgeName: string, password: string} = req.body;
+        try {
+            const judge: {judgeName: string, password: string} = req.body;
         const resp = await Judge.findOne({where: {judgeName: judge.judgeName}});
         if (!resp) {
             HttpHelper.handleUserError({message: "Judge not found"}, "Judge not found", res);
@@ -20,6 +21,11 @@ export class JudgeController {
             return;
         }
         HttpHelper.handleResponse(resp, res);
+        } catch (error) {
+            console.log(error);
+            HttpHelper.handleServerError(error, res);
+        }
+        
     }
 
     static async createJudgeCtrl(req: Request, res: Response) {
