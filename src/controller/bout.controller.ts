@@ -1,5 +1,6 @@
 import { Bout } from "../db/models/bout.model";
 import { Club } from "../db/models/club.model";
+import { Competition } from "../db/models/competition.model";
 import { Entry } from "../db/models/entry.model";
 import { HttpHelper } from "../helpers/http.helper";
 import { Request, Response } from "express";
@@ -55,9 +56,13 @@ export class BoutController {
   }
 }
 
-static async getAllByCompetition(competitionId: number) {
-    return Bout.findAll({
-      where: { competitionId },
+static async getAllByCompetition(req: Request, res: Response) {
+  const activeCompetition = await Competition.findOne({where: {active: true}});
+  if(!activeCompetition) {
+    return HttpHelper.handleNotFound('no active competition', res);
+  }
+    const bouts = await Bout.findAll({
+      where: { competitionId: activeCompetition.id },
       include: [
         {
           model: Entry,
@@ -80,6 +85,8 @@ static async getAllByCompetition(competitionId: number) {
         ["id", "ASC"],
       ],
     });
+
+    HttpHelper.handleResponse(bouts, res);
   }
 
 }
