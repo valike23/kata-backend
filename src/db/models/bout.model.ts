@@ -13,12 +13,12 @@ export interface Ibout {
   categoryId?: number;
   round?: number;
   competitionId?: number;
-  nextBoutId?: number | null;     // ← new
+  nextBoutId?: number | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-export class Bout extends Model {
+export class Bout extends Model<Ibout> implements Ibout {
   declare id: number;
   declare entry1Id: number | null;
   declare entry2Id: number | null;
@@ -26,63 +26,89 @@ export class Bout extends Model {
   declare categoryId: number;
   declare round: number;
   declare competitionId: number;
-  declare nextBoutId: number | null;  // ← new
+  declare nextBoutId: number | null;
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
-Bout.init({
-  id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
-    primaryKey: true
+Bout.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      autoIncrement: true,
+      primaryKey: true,
+    },
+    entry1Id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    entry2Id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    winnerId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+    categoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    round: {
+      type: DataTypes.SMALLINT,
+      allowNull: false,
+    },
+    competitionId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    nextBoutId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: "the ID of the Bout in the next round that this match's winner will enter",
+    },
   },
-  entry1Id: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  entry2Id: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  winnerId: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  categoryId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  round: {
-    type: DataTypes.SMALLINT,
-    allowNull: false
-  },
-  competitionId: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  // NEW FIELD: which bout the winner should advance into
-  nextBoutId: {
-    type: DataTypes.INTEGER,
-    allowNull: true,
-    comment: "the ID of the Bout in the next round that this match's winner will enter"
+  {
+    sequelize,
+    modelName: "bout",
+    tableName: "bouts",
+    timestamps: true,
   }
-}, {
-  sequelize,
-  modelName: 'bout',
-  timestamps: true
-});
+);
 
-// existing associations
+// Associations
 Bout.belongsTo(Entry, { foreignKey: "entry1Id", as: "entry1" });
 Bout.belongsTo(Entry, { foreignKey: "entry2Id", as: "entry2" });
 Bout.belongsTo(Entry, { foreignKey: "winnerId", as: "winner" });
 Bout.belongsTo(Category, { foreignKey: "categoryId", as: "category" });
 Bout.belongsTo(Competition, { foreignKey: "competitionId", as: "competition" });
-
-// self-referential associations
 Bout.belongsTo(Bout, { foreignKey: "nextBoutId", as: "nextBout" });
-Bout.hasMany(Bout,  { foreignKey: "nextBoutId", as: "previousBouts" });
+Bout.hasMany(Bout, { foreignKey: "nextBoutId", as: "previousBouts" });
 
-// Sync (in development you can use alter rather than force)
+// Bootstrap: ensure column & FK exist without full alter
 (async () => {
-  await sequelize.sync({ alter: true });
+  // sync base model (create table if missing)
+  await sequelize.sync({});
+
+  const qi = sequelize.getQueryInterface();
+  const tableDef = await qi.describeTable("bouts");
+
+  if (!tableDef.nextBoutId) {
+    // 1. Add column
+    await qi.addColumn("bouts", "nextBoutId", {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      comment: "the ID of the Bout in the next round that this match's winner will enter",
+    });
+
+    // 2. Add FK constraint
+    await qi.addConstraint("bouts", {
+      fields: ["nextBoutId"],
+      type: "foreign key",
+      name: "fk_bouts_nextBoutId",
+      references: { table: "bouts", field: "id" },
+      onUpdate: "CASCADE",
+      onDelete: "SET NULL",
+    });
+  }
 })();

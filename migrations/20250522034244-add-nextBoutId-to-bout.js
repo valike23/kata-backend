@@ -1,22 +1,23 @@
+// migrations/YYYYMMDDHHMMSS-add-nextBoutId-to-bout.js
 'use strict';
-
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
-    /**
-     * Add altering commands here.
-     *
-     * Example:
-     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-     */
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.addColumn(
+      'bouts',           // your actual table name
+      'nextBoutId',
+      {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'bouts',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
+      }
+    );
   },
-
-  async down (queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+  down: async (queryInterface) => {
+    await queryInterface.removeColumn('bouts', 'nextBoutId');
   }
 };
