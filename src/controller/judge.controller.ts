@@ -11,6 +11,7 @@ export class JudgeController {
     static async loginSingleJudgeCtrl(req: Request, res: Response) {
         try {
             const judge: {judgeName: string, password: string} = req.body;
+            console.log(judge);
         const resp = await Judge.findOne({where: {judgeName: judge.judgeName}});
         if (!resp) {
             HttpHelper.handleUserError({message: "Judge not found"}, "Judge not found", res);

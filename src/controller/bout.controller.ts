@@ -54,4 +54,32 @@ export class BoutController {
     return HttpHelper.handleServerError(error, res);
   }
 }
+
+static async getAllByCompetition(competitionId: number) {
+    return Bout.findAll({
+      where: { competitionId },
+      include: [
+        {
+          model: Entry,
+          as: "entry1",
+          include: [{ model: Club, as: "club" }],
+        },
+        {
+          model: Entry,
+          as: "entry2",
+          include: [{ model: Club, as: "club" }],
+        },
+        {
+          model: Entry,
+          as: "winner",
+          include: [{ model: Club, as: "club" }],
+        },
+      ],
+      order: [
+        ["round", "ASC"],
+        ["id", "ASC"],
+      ],
+    });
+  }
+
 }
